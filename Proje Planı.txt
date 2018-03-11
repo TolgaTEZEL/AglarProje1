@@ -1,0 +1,24 @@
+			-------------- PROJE PLANI ---------------
+1. hafta : Kurallar ve Plan belirlenerek neler kullanýlacaðýna karar verilecek ve ufaktan bir giriþ yapýlacak.*
+
+2. hafta : Swing kýsmý üzerinde düþünülen tasarýmlar gerçekleþtirilmeye çalýþýlacak. 
+Oyun ilk baþta tek kiþilik olarak client ve server olmadan oynanmaya çalýþýlacak ( Graphics,Render , Oyun tahtasý , halkalar vs denenecek).
+
+3. hafta : Client ve server uyarlanmaya çalýþýlýp birden fazla oyuncu sayýsýyla eþ zamanlý olarak oynanmaya çalýþýlacak. Extrem koþullar denenerek hatalara tespit edilecek.
+
+4. hafta : Genel hata kontrolü ve oyunun baþka bilgisayarlarda denenmesi projenin tamamlanýp classroom üzerinden gönderilmesi.
+
+
+
+
+
+
+
+
+
+
+
+
+
+* : Projede olasý durumlarda kurallar ve yöntemlerde deðiþikliðe gidilebilir.Güncellemeler yapýlacaktýr. 
+														- Tolga TEZEL 1521221043	

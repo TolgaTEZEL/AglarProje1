@@ -1,0 +1,9 @@
+Connect 4 (diðer adlarý Captain's Mistress, Four Up, Plot Four, Find Four, Four in a Row, Four in a Line Game) 1974 yýlýnda Hasbro þirketi tarafýndan piyasaya sürülen
+Matematik ve Strateji dahilinde bir tahta oyunudur. 2 kiþi ile oynanýr ve oyun süresi 1-10 dakikadýr.
+
+Oyunun Kurallarý'nýn anlaþýlmasý kolaydýr Connect Four'u kazanmak için, tek yapmanýz gereken 
+renkli checker(yuvarlak,halka) parçalarýnýzýn dördünü tic tac toe ile ayný olan bir sýraya baðlamak. Bu yatay, dikey veya çapraz olarak yapýlabilir.
+Her oyuncu bir kerede bir halka yaratabilir(oynatabilir). Bu, ya sýranýzý inþa etmenize ya da rakibinizin art arda dört halkaya gitmesini engelleme
+þansý verir.Arkadaþýnýz ya siz ya da arkadaþýnýz üst üste dört ya da belirtilen yuva sayýsý(hamle yapýlabilecek alan sayýsý) dolduðunda, bir çýkmazda sona erdiðinde biter.
+Eðer tekrar oynama seçeneði olacaksa oyunda 
+Siz ve arkadaþýnýz tekrar oynamaya karar verirseniz, kaybeden oyuna önce baþlar. Tahta temizlenerek yeni oyun baþlatýlýr.
