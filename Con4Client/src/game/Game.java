@@ -18,7 +18,12 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-
+// newframden baka baka matris ?= 1 set icon red ble vs yap. Evt get source ile butonun indislerini mesaj olarak yolla. TAMAMLANDIK COK SUKUR
+//kalan sorunlar
+// kontrol metodu sadece 1 clientte calısıyor
+// oyunun bitti aşaması 
+// clientlerin sizesi 
+// 
 /**
  *
  * @author Tolga
@@ -29,7 +34,11 @@ public class Game extends javax.swing.JFrame {
     public int RivalSelection = -1;
     public int myselection = -1;
         Random rand;
-    JButton[] button = new JButton[43];
+    JButton[][] button = new JButton[6][7];
+    public int[][] matris = new int[6][7];
+    public String durum = "";
+     public String matrisVerisi="";
+     
     ImageIcon icon = new ImageIcon("C:\\Users\\Tolga\\Desktop\\yellw\\kırmızı.png");
     Image img = icon.getImage();
     Image newimg = img.getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH);
@@ -49,78 +58,90 @@ public class Game extends javax.swing.JFrame {
         initComponents();
         ThisGame = this;
         rand = new Random();
-        button[1] = jButton1;
-        button[2] = jButton2;
-        button[3] = jButton3;
-        button[4] = jButton4;
-        button[5] = jButton5;
-        button[6] = jButton6;
-        button[7] = jButton7;
-        button[8] = jButton8;
-        button[9] = jButton9;
-        button[10] = jButton10;
-        button[11] = jButton11;
-        button[12] = jButton12;
-        button[13] = jButton13;
-        button[14] = jButton14;
-        button[15] = jButton15;
-        button[16] = jButton16;
-        button[17] = jButton17;
-        button[18] = jButton18;
-        button[19] = jButton19;
-        button[20] = jButton20;
-        button[21] = jButton21;
-        button[22] = jButton22;
-        button[23] = jButton23;
-        button[24] = jButton24;
-        button[25] = jButton25;
-        button[26] = jButton26;
-        button[27] = jButton27;
-        button[28] = jButton28;
-        button[29] = jButton29;
-        button[30] = jButton30;
-        button[31] = jButton31;
-        button[32] = jButton32;
-        button[33] = jButton33;
-        button[34] = jButton34;
-        button[35] = jButton35;
-        button[36] = jButton36;
-        button[37] = jButton37;
-        button[38] = jButton38;
-        button[39] = jButton39;
-        button[40] = jButton40;
-        button[41] = jButton41;
-        button[42] = jButton42;
-          tmr_slider = new Thread(() -> {
-            while (true) {
+        button[0][0] = jButton1;
+        button[0][1] = jButton2;
+        button[0][2] = jButton3;
+        button[0][3] = jButton4;
+        button[0][4] = jButton5;
+        button[0][5] = jButton6;
+        button[0][6] = jButton7;
+        
+        button[1][0] = jButton8;
+        button[1][1] = jButton9;
+        button[1][2] = jButton10;
+        button[1][3] = jButton11;
+        button[1][4] = jButton12;
+        button[1][5] = jButton13;
+        button[1][6] = jButton14;
+        
+        button[2][0] = jButton15;
+        button[2][1] = jButton16;
+        button[2][2] = jButton17;
+        button[2][3] = jButton18;
+        button[2][4] = jButton19;
+        button[2][5] = jButton20;
+        button[2][6] = jButton21;
+        
+        button[3][0] = jButton22;
+        button[3][1] = jButton23;
+        button[3][2] = jButton24;
+        button[3][3] = jButton25;
+        button[3][4] = jButton26;
+        button[3][5] = jButton27;
+        button[3][6] = jButton28;
+        
+        button[4][0] = jButton29;
+        button[4][1] = jButton30;
+        button[4][2] = jButton31;
+        button[4][3] = jButton32;
+        button[4][4] = jButton33;
+        button[4][5] = jButton34;
+        button[4][6] = jButton35;
+        
+        button[5][0] = jButton36;
+        button[5][1] = jButton37;
+        button[5][2] = jButton38;
+        button[5][3] = jButton39;
+        button[5][4] = jButton40;
+        button[5][5] = jButton41;
+        button[5][6] = jButton42;
+           tmr_slider = new Thread(() -> {
+            //soket bağlıysa dönsün
+            while (Client.socket.isConnected()) {
                 try {
+                    //
                     Thread.sleep(100);
-                    if (RivalSelection == -1 || myselection == -1) {
-                        int g = rand.nextInt(2);
-                       // lbl_gamer2.setIcon(icons_right[g]);
-                    } else {
-                       // lbl_gamer2.setIcon(icons_right[RivalSelection]);
-
-                        Thread.sleep(4000);
-                        if (myselection == 0 && RivalSelection == 2) {
-                         //   lbl_gamer1.setIcon(icons[2]);
-                         //   lbl_gamer2.setIcon(icons[1]);
-                        } else if (myselection < RivalSelection) {
-                           // lbl_gamer1.setIcon(icons[1]);
-                           // lbl_gamer2.setIcon(icons[2]);
-                        } else if (myselection > RivalSelection) {
-                         //   lbl_gamer1.setIcon(icons[2]);
-                          //  lbl_gamer2.setIcon(icons[1]);
-                        } else {
-                          //  lbl_gamer1.setIcon(icons[3]);
-                           // lbl_gamer2.setIcon(icons[3]);
+                    //SERVERDAN VE DİĞER CLİENTTEN GELEN BÜTÜN BİLGİLERİ BURADA TUTUP DEĞERLENDİRECEĞİZ.
+                    if(durum.equals("basla")){//biz başlıyoruz, yani oynama sırası bizde.
+                        //oynama sırası bizde olduğunda hep bu bilgiyi almalıyız.
+                        //kendi sıramız bitince de bu bilgiyi rakibe göndereceğiz zaten.
+                        oyundurumu.setText("Biz oynuyoruz.");
+                        //sıra bizdeyken olması gereken bütün işlemler metodlara yazılır ve metodlar buradan çağırılabilir.
+                        //örneğin rakibin sırası bittiğinde rakip bize "basla" mesajı gönderecekki sıranın bize geçtiğini
+                        //anlayacağız. ama rakip elini bitirdiğinde daha önce bize kendi oynadığı matrisin görüntüsünü göndermiş olacaktır
+                        //yani buraya geldiysek matrisimize veri yüklenmiş demektir. matrisi ekrandaki labellere yansıtalım.
+                        if(!matrisVerisi.equals("")){
+                            
+                            matrisi_cozumle(matrisVerisi);
+                            matrisVerisi ="";
+                            oyun_tahtasini_guncelle();
                         }
-                        tmr_slider.stop();
-                        
-                        
-                        
-
+                    }else if(durum.equals("bekle")){
+                        //bekle diye bir mesaj gelmişse kimden geldiği önemsiz, sıra rakipte demektir beklememiz gerekiyor.
+                        oyundurumu.setText("Rakip oynuyor");
+                    }else if(durum.equals("bitti")){
+                        //eğer bitti diye bir mesaj gelmişse demekki oyun rakibin son hamlesi sonucunda
+                        //bitmiş. o zaman rakip oyunu kazanmıştır. rakibin oyunu kazandığıyla ilgili mesaj ver.
+                        //oyunu biz kazanmışsak zaten rakibe mesajı biz gönderiyoruz. metodda kazandığımızla ilgili şeler vardır.
                     }
+                    
+                        //tmr_slider.stop();
+                       
+                        //7 saniye sonra oyun bitsin tekrar bağlansın
+                        //Thread.sleep(7000);
+                        //Reset();
+
+                    
                 } catch (InterruptedException ex) {
                     Logger.getLogger(Game.class.getName()).log(Level.SEVERE, null, ex);
                 }
@@ -179,16 +200,17 @@ public class Game extends javax.swing.JFrame {
         jButton40 = new javax.swing.JButton();
         jButton41 = new javax.swing.JButton();
         jButton42 = new javax.swing.JButton();
-        jLabel1 = new javax.swing.JLabel();
-        jLabel3 = new javax.swing.JLabel();
         jButton43 = new javax.swing.JButton();
         jTextField1 = new javax.swing.JTextField();
-        jLabel5 = new javax.swing.JLabel();
+        oyundurumu = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
-        addMouseMotionListener(new java.awt.event.MouseMotionAdapter() {
-            public void mouseMoved(java.awt.event.MouseEvent evt) {
-                formMouseMoved(evt);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
+            }
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
             }
         });
 
@@ -219,11 +241,6 @@ public class Game extends javax.swing.JFrame {
         jButton3.addMouseListener(new java.awt.event.MouseAdapter() {
             public void mouseClicked(java.awt.event.MouseEvent evt) {
                 jButton3MouseClicked(evt);
-            }
-        });
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
             }
         });
 
@@ -617,10 +634,6 @@ public class Game extends javax.swing.JFrame {
             }
         });
 
-        jLabel1.setText("her yöne en az 3 kare koy ya da 1 kare koy -1 de ona gelince otomatik baska yöne geçsin");
-
-        jLabel3.setText("jLabel3");
-
         jButton43.setText("Connect");
         jButton43.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -630,22 +643,19 @@ public class Game extends javax.swing.JFrame {
 
         jTextField1.setText("Name");
 
-        jLabel5.setText("jLabel5");
+        oyundurumu.setText("jLabel2");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(46, 46, 46)
-                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(83, 83, 83)
-                .addComponent(jLabel3)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 365, Short.MAX_VALUE)
-                .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 949, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(157, 157, 157))
-            .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(181, 181, 181)
+                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 72, javax.swing.GroupLayout.PREFERRED_SIZE)
+                        .addGap(36, 36, 36)
+                        .addComponent(oyundurumu, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(239, 239, 239)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
@@ -720,9 +730,7 @@ public class Game extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton14, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                             .addGroup(layout.createSequentialGroup()
-                                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                    .addComponent(jLabel5)
-                                    .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -736,22 +744,20 @@ public class Game extends javax.swing.JFrame {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                                 .addComponent(jButton7, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(61, 61, 61)
+                        .addGap(125, 125, 125)
                         .addComponent(jButton43)))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGap(157, 732, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(layout.createSequentialGroup()
-                .addGap(17, 17, 17)
+                .addGap(62, 62, 62)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jLabel3)
-                    .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 112, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jLabel5))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                    .addComponent(oyundurumu))
+                .addGap(18, 18, 18)
                 .addComponent(jButton43)
-                .addGap(74, 74, 74)
+                .addGap(63, 63, 63)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -805,249 +811,735 @@ public class Game extends javax.swing.JFrame {
                     .addComponent(jButton37, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton42, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton41, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(352, Short.MAX_VALUE))
+                .addContainerGap(397, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    
+    
+    public void oyun_tahtasini_guncelle(){
+        //1 bizim oynadığımız renkleri ifade ediyor ve sarı rengi gösteriyor, 
+        //2 rakibin rengini ifade ediyor ve kırmızıyı işaret ediyor..
+        //var olan matrisi ekrana gösterelim
+        //bu matris ya bizim oynadığımız matristir ya da rakibin oynayıp bize gönderdiği matristir
+        //farketmez zaten hepsi tek bir matrise kaydoluyor.
+        
+        for (int i = 0; i < button.length; i++) {
+            for (int j = 0; j < button[i].length; j++) {
+                if(matris[i][j]==1)
+                    button[i][j].setIcon(yellow);
+                else if(matris[i][j] == 2)
+                     button[i][j].setIcon(red);
+                else
+                     button[i][j].setIcon(null);
+            }
+        }
+        
+//     
+        
+    }
+    
+    public void Reset()
+    {
+        if (Client.socket!=null) {
+            if (Client.socket.isConnected())
+            {
+                Client.Stop();
+            }
+        }
+    
+    }
+    
+     public void matrisi_cozumle(String matrisStringHali){
+         
+         for (int q = 0; q < matrisStringHali.length(); q+=3) {
+             int renk = Character.getNumericValue(matrisStringHali.charAt(q));
+             int x = Character.getNumericValue(matrisStringHali.charAt(q+1));
+             int y = Character.getNumericValue(matrisStringHali.charAt(q+2));
+             
+             matris[x][y]=renk;
+         }
+         
+         for (int i = 0; i < button.length; i++) {
+             for (int j = 0; j < button[i].length; j++) {
+                 if(matris[i][j]==1){
+                      button[i][j].setIcon(yellow);
+                 }
+                 else if(matris[i][j]==2){
+                      button[i][j].setIcon(red);
+                 }
+                 else{
+                     button[i][j].setIcon(null);
+                 }
+             }
+         }
+       
+   
+         
+    }
+    
+    public void matrisi_rakibe_gonder(){
+        //matrisi rakibe gönderirken şöyle bir durumn var. bize göre
+        //0:boş, 1:biz, 2:rakip
+        //o zaman rakibe gönderirken biz rakibin rakibi olduğumuzdan 
+        //1leri 2 ye, 2leri 1e çevirmemiz lazım ki doğru olsun ?
+
+        //zaten o da bize matrisi bize göre dönüştürerek göndermiş oluyor bu sayede
+        String matrisinStringHali = "";
+
+        for (int i = 0; i < button.length; i++) {
+            for (int j = 0; j < button[i].length; j++) {
+                if (matris[i][j] == 1) {
+                    matris[i][j] = 2;
+                    matrisinStringHali+="2"+i+j;
+                } else if (matris[i][j] == 2) {
+                    matris[i][j] = 1;
+                    matrisinStringHali+="1"+i+j;
+                }
+            }
+
+        }
+
+        Message msg = new Message(Message.Message_Type.MatrisGonder);
+        msg.content = matrisinStringHali;
+        Client.Send(msg); //gönderdik oh.
+    }
+    
+    public void sirayi_rakibe_devret(){
+        Message msg = new Message(Message.Message_Type.Start);
+        msg.content = "basla";
+        Client.Send(msg);
+        //sırayı rakibe devrettiysek, kendi sıramızı da "bekle" olarak güncellememiz lazım ki
+        //bizim client bizim bekliyor olduğumuzu anlayabilsin.
+        durum = "bekle";
+    }
+    
+    public void oyun_bitti_mi_kontrol_et(){
+        System.out.println("geldim buraya");
+        //burada gerekli kontrolleri yapcan işte oyun bittiyse rakibe bitti mesajını göndericem
+        for (int i = 0; i < button.length; i++) {
+            for (int j = 0; j < button[i].length; j++) {
+                // sağ 4 kutucuk kontrolü i sabit j+1 ; jler degiseceği icin button[i]
+                if( j<=3 && j<=button[i].length && button[i][j].getIcon() == red &&  button[i][j+1].getIcon() == red && button[i][j+2].getIcon() == red &&j+1<=button[i].length && button[i][j+3].getIcon() == red && j+2<=button[i].length && j+3<=button[i].length ){
+//                    if(button[i][j].getIcon() == red && button[i][j+1].getIcon() == red && button[i][j+2].getIcon() == red && button[i][j+3].getIcon() == red  ){
+//                        System.out.println("1.kural 1. if");
+//                    }
+//                    else{
+//                        System.out.println("gg");
+//                    }
+                    System.out.println("1. kural");
+                }
+//                else if(j>=1 && j-1<=button[i].length && j<=button[i].length && j+1<=button[i].length && j+2<=button[i].length){
+//                     if(button[i][j-1].getIcon() == red && button[i][j].getIcon() == red && button[i][j+1].getIcon() == red && button[i][j+2].getIcon() == red  ){
+//                        System.out.println("1.kural 2. if");
+//                    }
+//                }
+//                else if(j>=2 &&j-2<=button[i].length && j-1<=button[i].length && j<=button[i].length && j<=button[i].length){
+//                     if(button[i][j].getIcon() == red && button[i][j+1].getIcon() == red && button[i][j+2].getIcon() == red && button[i][j+3].getIcon() == red  ){
+//                        System.out.println("1.kural 1. if");
+//                    }
+//                }
+//                else if(j>=3 &&j-3<=button[i].length && j-2<=button[i].length && j-1<=button[i].length && j-2<=button[i].length){
+//                     if(button[i][j].getIcon() == red && button[i][j+1].getIcon() == red && button[i][j+2].getIcon() == red && button[i][j+3].getIcon() == red  ){
+//                        System.out.println("1.kural 1. if");
+//                    }
+//                }
+                
+                // yukardan aşağıya 4 kutucuk i+1 , j sabit . i ler degiseceği icin button
+                else if(i<=2 && i<=button.length && button[i][j].getIcon() == red && i+1<=button.length && button[i+1][j].getIcon() == red && i+2<=button.length && button[i+2][j].getIcon() == red && i+3<=button.length ){
+                   
+                        System.out.println("2.kural 1. if");
+                    
+                }
+//                else if(i>=1 &&i-1<=button[i].length && i<=button[i].length && i+1<=button[i].length && i+2<=button[i].length){
+//                    
+//                }
+//                else if(i>=2 && i-2<=button[i].length && i-1<=button[i].length && i<=button[i].length && i+1<=button[i].length){
+//                    
+//                }
+//                else if(i>=3 && i-3<=button[i].length && i-2<=button[i].length && i-1<=button[i].length && i<=button[i].length){
+//                    
+//                }
+                
+                // sağ üst köşeden sol alt köşeye doğru i+1,j-1 
+                else if((i <= 2  && j >= 2 ) && (i<=button.length && j<=button[i].length ) && (i+1<=button.length && j-1<=button[i].length ) && (i+2<=button.length && j-2<=button[i].length ) && (i+3<=button.length && j-3<=button[i].length )){
+                    if(button[i][j].getIcon() == red && button[i+1][j-1].getIcon() == red && button[i+2][j-2].getIcon() == red && button[i+3][j-3].getIcon() == red  ){
+                        System.out.println("3.kural 1. if");
+                    }
+                }
+//                else if((i >= 1 && j <= 2 ) && (i-1<=button.length && j+1<=button[i].length ) && (i<=button.length && j<=button[i].length ) && (i+1<=button.length && j-1<=button[i].length ) && (i+2<=button.length && j-2<=button[i].length )){
+//                    
+//                }
+//                else if((i <= 2 && j <= 1 ) && (i-2<=button.length && j+2<=button[i].length ) && (i-1<=button.length && j+1<=button[i].length ) && (i<=button.length && j<=button[i].length ) && (i+1<=button.length && j-1<=button[i].length )){
+//                    
+//                }
+//                else if((i <= 3 && j <= 0 ) && (i-3<=button.length && j+3<=button[i].length ) && (i-2<=button.length && j+2<=button[i].length ) && (i-1<=button.length && j+1<=button[i].length ) && (i<=button.length && j<=button[i].length )){
+//                    
+//                }
+                
+                // sol üst köşeden sağ alt köşeye doğru
+                
+                else if((i <= 2 && j <= 2 ) &&(i<=button.length && j<=button[i].length ) && (i+1<=button.length && j+1<=button[i].length ) && (i+2<=button.length && j+2<=button[i].length ) && (i+3<=button.length && j+3<=button[i].length )){
+                    if(button[i][j].getIcon() == red && button[i+1][j+1].getIcon() == red && button[i+2][j+2].getIcon() == red && button[i+3][j+3].getIcon() == red  ){
+                        System.out.println("4.kural 1. if");
+                    }
+                }
+//                else if((i <= 1 && j <= 1 ) &&(i-1<=button.length && j-1<=button[i].length ) && (i<=button.length && j<=button[i].length ) && (i+1<=button.length && j+1<=button[i].length ) && (i+2<=button.length && j+2<=button[i].length )){
+//                    
+//                }
+//                else if((i <= 2 && j <= 2 ) &&(i-2<=button.length && j-2<=button[i].length ) && (i-1<=button.length && j-1<=button[i].length ) && (i<=button.length && j<=button[i].length ) && (i+1<=button.length && j+1<=button[i].length )){
+//                    
+//                }
+//                else if((i <= 3 && j <= 3 ) && (i-3 <=button.length && j-3<=button[i].length ) && (i-2<=button.length && j-2<=button[i].length ) && (i-1<=button.length && j-1<=button[i].length ) && (i<=button.length && j<=button[i].length )){
+//                    
+//                }
+                
+                
+                
+            }
+       }
+        //Message msg = new Message(Message.Message_Type.Text);
+        //msg.content = "bitti";
+        //Client.Send(msg);
+        //mesajdan sonrada bizim ekrana oyunun bittiğini felan yazarım.
+    }
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
         // TODO add your handling code here:
-        button[1].setIcon(red);
+      // button[0][0].setIcon(red);
 //        if(button[4].getIcon() == red){
 //            button[1].setText("sa");
 //        }
-
+         if(matris[0][0]== 0){
+            matris[0][0]=1;
+            
+            oyun_tahtasini_guncelle();
+           
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton1MouseClicked
 
     private void jButton5MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton5MouseClicked
         // TODO add your handling code here:
-        button[5].setIcon(red);
-
+     //  button[0][4].setIcon(red);
+        if(matris[0][4]== 0){
+            matris[0][4]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton5MouseClicked
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
         // TODO add your handling code here:
-        button[3].setIcon(red);
+//        button[0][2].setIcon(red);
+//         button[0][0].setIcon(red);
+//        if(button[4].getIcon() == red){
+//            button[1].setText("sa");
+//        }
+         if(matris[0][2]== 0){
+            matris[0][2]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
         // TODO add your handling code here:
-        button[4].setIcon(red);
+    //    button[0][3].setIcon(red);
+        if(matris[0][3]== 0){
+            matris[0][3]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void jButton2MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton2MouseClicked
         // TODO add your handling code here:
-        button[2].setIcon(red);
+       // button[0][1].setIcon(red);
+//         if(button[0][1].getIcon() == null){
+//            button[0][1].setIcon(red);
+//            oyun_tahtasini_guncelle();
+//            matrisi_rakibe_gonder();
+//            sirayi_rakibe_devret();
+//            oyun_bitti_mi_kontrol_et();
+//         }
+        if(matris[0][1]== 0){
+            matris[0][1]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton2MouseClicked
 
-    private void formMouseMoved(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_formMouseMoved
-        // TODO add your handling code here:
-        // while ile yapıp if i+1 is existed diyeblirim 
-
-        for (int i = 1; i < button.length; i++) {
-            if (button[i].getIcon() == red && button[i + 1].getIcon() == red && button[i + 2].getIcon() == red && button[i + 3].getIcon() == red) {
-                System.out.println("kural1");
-                break;
-            } else if (button[i].getIcon() == red && button[i + 7].getIcon() == red && button[i + 14].getIcon() == red && button[i + 21].getIcon() == red) {
-                System.out.println("kural2");
-                break;
-            } else if (button[i].getIcon() == red && button[i + 8].getIcon() == red && button[i + 16].getIcon() == red && button[i + 24].getIcon() == red) {
-                System.out.println("kural3");
-                break;
-            } else {
-
-            }
-        }
-    }//GEN-LAST:event_formMouseMoved
-
     private void jButton6MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton6MouseClicked
-        button[6].setIcon(red);         // TODO add your handling code here:
+     //   button[0][5].setIcon(red);   
+         if(matris[0][5]== 0){
+            matris[0][5]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton6MouseClicked
 
     private void jButton7MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton7MouseClicked
         // TODO add your handling code here:
-        button[7].setIcon(red);
+        //button[0][6].setIcon(red);
+        if(matris[0][6]== 0){
+            matris[0][6]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton7MouseClicked
-
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
 
     private void jButton8MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton8MouseClicked
         // TODO add your handling code here:
-        button[8].setIcon(red);
+       // button[1][0].setIcon(red);
+        if(matris[1][0]== 0){
+            matris[1][0]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton8MouseClicked
 
     private void jButton9MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton9MouseClicked
         // TODO add your handling code here:
-        button[9].setIcon(red);
+       // button[1][1].setIcon(red); 
+        if(matris[1][1]== 0){
+            matris[1][1]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
+        
     }//GEN-LAST:event_jButton9MouseClicked
 
     private void jButton10MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton10MouseClicked
         // TODO add your handling code here:
-        button[10].setIcon(red);
+       if(matris[1][2]== 0){
+            matris[1][2]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton10MouseClicked
 
     private void jButton11MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton11MouseClicked
         // TODO add your handling code here:
-        button[11].setIcon(red);
+        //button[1][3].setIcon(red);
+        if(matris[1][3]== 0){
+            matris[1][3]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton11MouseClicked
 
     private void jButton12MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton12MouseClicked
         // TODO add your handling code here:
-        button[12].setIcon(red);
+       // button[1][4].setIcon(red);
+        if(matris[1][4]== 0){
+            matris[1][4]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton12MouseClicked
 
     private void jButton13MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton13MouseClicked
         // TODO add your handling code here:
-        button[13].setIcon(red);
+       // button[1][5].setIcon(red);
+       if(matris[1][5]== 0){
+            matris[1][5]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton13MouseClicked
 
     private void jButton14MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton14MouseClicked
         // TODO add your handling code here:
-        button[14].setIcon(red);
+       // button[1][6].setIcon(red);
+       if(matris[1][6]== 0){
+            matris[1][6]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
+         
     }//GEN-LAST:event_jButton14MouseClicked
 
     private void jButton15MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton15MouseClicked
         // TODO add your handling code here:
-        button[15].setIcon(red);
+        if(matris[2][0]== 0){
+            matris[2][0]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
+       // button[2][0].setIcon(red);
     }//GEN-LAST:event_jButton15MouseClicked
 
     private void jButton16MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton16MouseClicked
         // TODO add your handling code here:
-        button[16].setIcon(red);
+        //button[2][1].setIcon(red);
+        if(matris[2][1]== 0){
+            matris[2][1]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton16MouseClicked
 
     private void jButton17MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton17MouseClicked
         // TODO add your handling code here:
-        button[17].setIcon(red);
+        //button[2][2].setIcon(red);
+        if(matris[2][2]== 0){
+            matris[2][2]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton17MouseClicked
 
     private void jButton18MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton18MouseClicked
         // TODO add your handling code here:
-        button[18].setIcon(red);
+        if(matris[2][3]== 0){
+            matris[2][3]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton18MouseClicked
 
     private void jButton19MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton19MouseClicked
         // TODO add your handling code here:
-        button[19].setIcon(red);
+        if(matris[2][4]== 0){
+            matris[2][4]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton19MouseClicked
 
     private void jButton20MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton20MouseClicked
         // TODO add your handling code here:
-        button[20].setIcon(red);
+       if(matris[2][5]== 0){
+            matris[2][5]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton20MouseClicked
 
     private void jButton21MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton21MouseClicked
         // TODO add your handling code here:
-        button[21].setIcon(red);
+       if(matris[2][6]== 0){
+            matris[2][6]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton21MouseClicked
 
     private void jButton22MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton22MouseClicked
         // TODO add your handling code here:
-        button[22].setIcon(red);
+        if(matris[3][0]== 0){
+            matris[3][0]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton22MouseClicked
 
     private void jButton23MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton23MouseClicked
         // TODO add your handling code here:
-        button[23].setIcon(red);
+        if(matris[3][1]== 0){
+            matris[3][1]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton23MouseClicked
 
     private void jButton24MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton24MouseClicked
         // TODO add your handling code here:
-        button[24].setIcon(red);
+        if(matris[3][2]== 0){
+            matris[3][2]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton24MouseClicked
 
     private void jButton25MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton25MouseClicked
         // TODO add your handling code here:
-        button[25].setIcon(red);
+        if(matris[3][3]== 0){
+            matris[3][3]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton25MouseClicked
 
     private void jButton26MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton26MouseClicked
         // TODO add your handling code here:
-        button[26].setIcon(red);
+        if(matris[3][4]== 0){
+            matris[3][4]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton26MouseClicked
 
     private void jButton27MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton27MouseClicked
         // TODO add your handling code here:
 
-        button[27].setIcon(red);
+       if(matris[3][5]== 0){
+            matris[3][5]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton27MouseClicked
 
     private void jButton28MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton28MouseClicked
         // TODO add your handling code here:
-        button[28].setIcon(red);
+        if(matris[3][6]== 0){
+            matris[3][6]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton28MouseClicked
 
     private void jButton29MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton29MouseClicked
         // TODO add your handling code here:
-        button[29].setIcon(red);
+        if(matris[4][0]== 0){
+            matris[4][0]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton29MouseClicked
 
     private void jButton30MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton30MouseClicked
         // TODO add your handling code here:
-        button[30].setIcon(red);
+       if(matris[4][1]== 0){
+            matris[4][1]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton30MouseClicked
 
     private void jButton31MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton31MouseClicked
         // TODO add your handling code here:
-        button[31].setIcon(red);
+        if(matris[4][2]== 0){
+            matris[4][2]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton31MouseClicked
 
     private void jButton32MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton32MouseClicked
         // TODO add your handling code here:
-        button[32].setIcon(red);
+       if(matris[4][3]== 0){
+            matris[4][3]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton32MouseClicked
 
     private void jButton33MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton33MouseClicked
         // TODO add your handling code here:
-        button[33].setIcon(red);
+        if(matris[4][4]== 0){
+            matris[4][4]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton33MouseClicked
 
     private void jButton34MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton34MouseClicked
         // TODO add your handling code here:
-        button[34].setIcon(red);
+       if(matris[4][5]== 0){
+            matris[4][5]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton34MouseClicked
 
     private void jButton35MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton35MouseClicked
         // TODO add your handling code here:
-        button[35].setIcon(red);
+        if(matris[4][6]== 0){
+            matris[4][6]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton35MouseClicked
 
     private void jButton36MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton36MouseClicked
         // TODO add your handling code here:
-        button[36].setIcon(red);
+        if(matris[5][0]== 0){
+            matris[5][0]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton36MouseClicked
 
     private void jButton37MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton37MouseClicked
         // TODO add your handling code here:
-        button[37].setIcon(red);
+        if(matris[5][1]== 0){
+            matris[5][1]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton37MouseClicked
 
     private void jButton38MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton38MouseClicked
         // TODO add your handling code here:
-        button[38].setIcon(red);
+       if(matris[5][2]== 0){
+            matris[5][2]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton38MouseClicked
 
     private void jButton39MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton39MouseClicked
         // TODO add your handling code here:
-        button[39].setIcon(red);
+       if(matris[5][3]== 0){
+            matris[5][3]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton39MouseClicked
 
     private void jButton40MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton40MouseClicked
         // TODO add your handling code here:
-        button[40].setIcon(red);
+       if(matris[5][4]== 0){
+            matris[5][4]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton40MouseClicked
 
     private void jButton41MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton41MouseClicked
         // TODO add your handling code here:
-        button[41].setIcon(red);
+        if(matris[5][5]== 0){
+            matris[5][5]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton41MouseClicked
 
     private void jButton42MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton42MouseClicked
         // TODO add your handling code here:
-        button[42].setIcon(red);
+       if(matris[5][6]== 0){
+            matris[5][6]= 1;
+           
+            oyun_tahtasini_guncelle();
+            matrisi_rakibe_gonder();
+            sirayi_rakibe_devret();
+            oyun_bitti_mi_kontrol_et();
+         }
     }//GEN-LAST:event_jButton42MouseClicked
 
     private void jButton43ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton43ActionPerformed
@@ -1055,6 +1547,19 @@ public class Game extends javax.swing.JFrame {
         Client.Start("127.0.0.1", 2000);
         
     }//GEN-LAST:event_jButton43ActionPerformed
+
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        // TODO add your handling code here:
+         Client.Stop();
+    }//GEN-LAST:event_formWindowClosing
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        // TODO add your handling code here:
+         for(int i=0;i<button.length;i++)
+            for(int j=0;j<button[i].length;j++)
+                button[i][j].setIcon(null);
+        oyun_tahtasini_guncelle();
+    }//GEN-LAST:event_formWindowOpened
 
     /**
      * @param args the command line arguments
@@ -1130,15 +1635,13 @@ public class Game extends javax.swing.JFrame {
     public javax.swing.JButton jButton40;
     public javax.swing.JButton jButton41;
     public javax.swing.JButton jButton42;
-    private javax.swing.JButton jButton43;
+    public static javax.swing.JButton jButton43;
     public javax.swing.JButton jButton5;
     public javax.swing.JButton jButton6;
     public javax.swing.JButton jButton7;
     public javax.swing.JButton jButton8;
     public javax.swing.JButton jButton9;
-    private javax.swing.JLabel jLabel1;
-    public javax.swing.JLabel jLabel3;
-    private javax.swing.JLabel jLabel5;
     private javax.swing.JTextField jTextField1;
+    private javax.swing.JLabel oyundurumu;
     // End of variables declaration//GEN-END:variables
 }

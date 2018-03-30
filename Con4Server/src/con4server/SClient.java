@@ -17,10 +17,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author INSECT
- */
+
 public class SClient {
 
     int id;
@@ -28,10 +25,13 @@ public class SClient {
     Socket soket;
     ObjectOutputStream sOutput;
     ObjectInputStream sInput;
+    //clientten gelenleri dinleme threadi
     Listen listenThread;
+    //cilent eşleştirme thredi
     PairingThread pairThread;
-    Thread l;
-    SClient rival2;
+    //rakip client
+    SClient rival;
+    //eşleşme durumu
     public boolean paired = false;
 
     public SClient(Socket gelenSoket, int id) {
@@ -43,14 +43,13 @@ public class SClient {
         } catch (IOException ex) {
             Logger.getLogger(SClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-
+        //thread nesneleri
         this.listenThread = new Listen(this);
-
         this.pairThread = new PairingThread(this);
-        // Server.pairThread.start();    
 
     }
 
+    //client mesaj gönderme
     public void Send(Message message) {
         try {
             this.sOutput.writeObject(message);
@@ -60,98 +59,130 @@ public class SClient {
 
     }
 
+    //client dinleme threadi
+    //her clientin ayrı bir dinleme thredi var
     class Listen extends Thread {
 
         SClient TheClient;
 
+        //thread nesne alması için yapıcı metod
         Listen(SClient TheClient) {
             this.TheClient = TheClient;
         }
 
         public void run() {
-
+            //client bağlı olduğu sürece dönsün
             while (TheClient.soket.isConnected()) {
                 try {
-
+                    //mesajı bekleyen kod satırı
                     Message received = (Message) (TheClient.sInput.readObject());
+                    //mesaj gelirse bu satıra geçer
+                    //mesaj tipine göre işlemlere ayır
                     switch (received.type) {
                         case Name:
                             TheClient.name = received.content.toString();
+                            // isim verisini gönderdikten sonra eşleştirme işlemine başla
                             TheClient.pairThread.start();
                             break;
-
                         case Disconnect:
                             break;
                         case Text:
                             //gelen metni direkt rakibe gönder
-                            Server.Send(TheClient.rival2, received);
+                            Server.Send(TheClient.rival, received);
                             break;
                         case Selected:
                             //gelen seçim yapıldı mesajını rakibe gönder
-                            Server.Send(TheClient.rival2, received);
+                            Server.Send(TheClient.rival, received);
                             break;
-                        case Finish:
+                        case Bitis:
+                            break;
+                        case Start:
+                            //gelen durumu direkt rakibe gönder
+                            Server.Send(TheClient.rival, received);
+                            break;
+                        case MatrisGonder:
+                            //gelen matrisi direkt rakibe gönder
+                            Server.Send(TheClient.rival, received);
                             break;
 
                     }
 
                 } catch (IOException ex) {
                     Logger.getLogger(SClient.class.getName()).log(Level.SEVERE, null, ex);
-                    
+                    //client bağlantısı koparsa listeden sil
                     Server.Clients.remove(TheClient);
 
                 } catch (ClassNotFoundException ex) {
                     Logger.getLogger(SClient.class.getName()).log(Level.SEVERE, null, ex);
+                    //client bağlantısı koparsa listeden sil
+                    Server.Clients.remove(TheClient);
                 }
             }
-            int i = 0;
 
         }
     }
 
+    //eşleştirme threadi
+    //her clientin ayrı bir eşleştirme thredi var
     class PairingThread extends Thread {
+
         SClient TheClient;
 
         PairingThread(SClient TheClient) {
             this.TheClient = TheClient;
         }
-        public void run() {
 
-            while (TheClient.soket.isConnected() && TheClient.paired==false) {
+        public void run() {
+            //client bağlı ve eşleşmemiş olduğu durumda dön
+            while (TheClient.soket.isConnected() && TheClient.paired == false) {
                 try {
+                    //lock mekanizması
+                    //sadece bir client içeri grebilir
+                    //diğerleri release olana kadar bekler
                     Server.pairTwo.acquire(1);
                     
-                    if (TheClient.paired) {
-                        return;
-                    }
-                    SClient crival= null;
-                    while (crival == null) {
-                        for (SClient clnt : Server.Clients) {
-                            if (TheClient!=clnt && clnt.rival2==null) {
-                                crival=clnt;
-                                crival.paired=true;
-                                crival.rival2=TheClient;
-                                TheClient.rival2= crival;
-                                TheClient.paired=true;
-                                break;
+                    //client eğer eşleşmemişse gir
+                    if (!TheClient.paired) {
+                        SClient crival = null;
+                        //eşleşme sağlanana kadar dön
+                        while (crival == null && TheClient.soket.isConnected()) {
+                            //liste içerisinde eş arıyor
+                            for (SClient clnt : Server.Clients) {
+                                if (TheClient != clnt && clnt.rival == null) {
+                                    //eşleşme sağlandı ve gerekli işaretlemeler yapıldı
+                                    crival = clnt;
+                                    crival.paired = true;
+                                    crival.rival = TheClient;
+                                    TheClient.rival = crival;
+                                    TheClient.paired = true;
+                                    break;
+                                }
                             }
+                            //sürekli dönmesin 1 saniyede bir dönsün
+                            //thredi uyutuyoruz
+                            sleep(1000);
                         }
-                        sleep(1000);
+                        //eşleşme oldu
+                        //her iki tarafada eşleşme mesajı gönder 
+                        //oyunu başlat
+                        Message msg1 = new Message(Message.Message_Type.RivalConnected);
+                        msg1.content = TheClient.name;
+                        Server.Send(TheClient.rival, msg1);
+
+                        Message msg2 = new Message(Message.Message_Type.RivalConnected);
+                        msg2.content = TheClient.rival.name;
+                        Server.Send(TheClient, msg2);
+                        
+                        msg1 = new Message(Message.Message_Type.Start);
+                        msg1.content = "basla";
+                        Server.Send(TheClient.rival, msg1);
+
+                        msg2 = new Message(Message.Message_Type.Start);
+                        msg2.content = "bekle";
+                        Server.Send(TheClient, msg2);
                     }
-
-       
-
-            
-
-                    Message msg1 = new Message(Message.Message_Type.RivalConnected);
-                    msg1.content = TheClient.rival2.name;
-                    Server.Send(TheClient.rival2, msg1);
-
-                    Message msg2 = new Message(Message.Message_Type.RivalConnected);
-                    msg2.content = TheClient.name;
-                    Server.Send(TheClient, msg2);
-
-                    
+                    //lock mekanizmasını servest bırak
+                    //bırakılmazsa deadlock olur.
                     Server.pairTwo.release(1);
                 } catch (InterruptedException ex) {
                     Logger.getLogger(PairingThread.class.getName()).log(Level.SEVERE, null, ex);
@@ -161,4 +192,3 @@ public class SClient {
     }
 
 }
-

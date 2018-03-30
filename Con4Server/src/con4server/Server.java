@@ -16,34 +16,36 @@ import java.util.concurrent.Semaphore;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
-/**
- *
- * @author INSECT
- */
+
 // dinleme threadi
 class ServerThread extends Thread {
-
+// degisti +111
     public void run() {
-
+        //server kapanana kadar dinle
         while (!Server.serverSocket.isClosed()) {
             try {
                 Server.Display("Client Bekleniyor...");
+                // clienti bekleyen satır
+                //bir client gelene kadar bekler
                 Socket clientSocket = Server.serverSocket.accept();
+                //client gelirse bu satıra geçer
                 Server.Display("Client Geldi...");
-                                SClient nclient = new SClient(clientSocket, Server.IdClient);
-               nclient.listenThread.start();
-
+                //gelen client soketinden bir sclient nesnesi oluştur
+                //bir adet id de kendimiz verdik
+                SClient nclient = new SClient(clientSocket, Server.IdClient);
+                
                 Server.IdClient++;
+                //clienti listeye ekle.
                 Server.Clients.add(nclient);
-//                Server.PlayingClients.add(nclient);
+                //client mesaj dinlemesini başlat
+                nclient.listenThread.start();
+
             } catch (IOException ex) {
                 Logger.getLogger(ServerThread.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
     }
 }
-
-
 
 public class Server {
 
@@ -56,10 +58,12 @@ public class Server {
     public static ServerThread runThread;
     //public static PairingThread pairThread;
 
-   public static ArrayList<SClient> Clients = new ArrayList<>();
+    public static ArrayList<SClient> Clients = new ArrayList<>();
 
+    //semafor nesnesi
     public static Semaphore pairTwo = new Semaphore(1, true);
 
+    // başlaşmak için sadece port numarası veriyoruz
     public static void Start(int openport) {
         try {
             Server.port = openport;
@@ -67,27 +71,23 @@ public class Server {
 
             Server.runThread = new ServerThread();
             Server.runThread.start();
-            
+
         } catch (IOException ex) {
             Logger.getLogger(Server.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
     public static void Display(String msg) {
-
         System.out.println(msg);
-
     }
 
+    // serverdan clietlara mesaj gönderme
+    //clieti alıyor ve mesaj olluyor bunu dene 
     public static void Send(SClient cl, Message msg) {
-
         try {
             cl.sOutput.writeObject(msg);
         } catch (IOException ex) {
             Logger.getLogger(SClient.class.getName()).log(Level.SEVERE, null, ex);
         }
-
     }
-
- 
 }
