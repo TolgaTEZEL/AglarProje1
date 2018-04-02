@@ -180,6 +180,7 @@ public class SClient {
                         msg2 = new Message(Message.Message_Type.Start);
                         msg2.content = "bekle";
                         Server.Send(TheClient, msg2);
+                        
                     }
                     //lock mekanizmasını servest bırak
                     //bırakılmazsa deadlock olur.
